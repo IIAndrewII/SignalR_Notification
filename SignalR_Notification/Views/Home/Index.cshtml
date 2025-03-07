@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Real-time Notifications";
+}
+
+<h1>Real-time Notifications</h1>
+<button onclick="sendNotification()">Send Notification</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationHub")
+        .build();
+
+    connection.on("ReceiveNotification", message => {
+        console.log("Notification received:", message);
+        showNotification(message);
+    });
+
+    connection.start().catch(err => console.error(err));
+
+    function sendNotification() {
+        fetch("/api/notifications/send?message=Hello");
+    }
+
+    function showNotification(message) {
+        if (Notification.permission === "granted") {
+            new Notification("New Notification", { body: message });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("New Notification", { body: message });
+                }
+            });
+        }
+    }
+
+    // Register the Service Worker for push notifications
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(registration => {
+                console.log("Service Worker registered with scope:", registration.scope);
+            })
+            .catch(error => {
+                console.log("Service Worker registration failed:", error);
+            });
+    }
+</script>
