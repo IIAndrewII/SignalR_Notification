@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace SignalR_Notification.Controllers
 {
-    [Route("api/notifications")] 
+    [Route("api/notifications")]
     [ApiController]
     public class NotificationController : ControllerBase
     {
@@ -15,8 +15,7 @@ namespace SignalR_Notification.Controllers
             _hubContext = hubContext;
         }
 
-        [HttpGet("send")]
-        [HttpPost("send")] 
+        [HttpPost("send")]
         public async Task<IActionResult> SendNotification([FromQuery] string message)
         {
             await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);

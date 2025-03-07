@@ -3,7 +3,7 @@
 }
 
 <h1>Real-time Notifications</h1>
-<button onclick="sendNotification()">Send Notification</button>
+<button onclick="sendNotification()">Say Hello</button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
@@ -19,7 +19,20 @@
     connection.start().catch(err => console.error(err));
 
     function sendNotification() {
-        fetch("/api/notifications/send?message=Hello");
+        fetch("/api/notifications/send?message=Hello", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => console.log("Notification sent:", data))
+        .catch(error => console.error("Error sending notification:", error));
     }
 
     function showNotification(message) {
