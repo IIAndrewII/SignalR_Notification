@@ -1,4 +1,4 @@
-using SignalR_Notification.Controllers;
+using SignalRWebPushApp.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,12 +24,15 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllers();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapHub<NotificationHub>("/notificationHub");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<NotificationHub>("/notificationHub");
+    endpoints.MapFallbackToFile("index.html");
+});
 
 app.Run();

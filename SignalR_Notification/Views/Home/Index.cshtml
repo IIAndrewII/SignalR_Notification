@@ -1,60 +1,47 @@
-﻿@{
-    ViewData["Title"] = "Real-time Notifications";
-}
-
-<h1>Real-time Notifications</h1>
-<button onclick="sendNotification()">Say Hello</button>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-<script>
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/notificationHub")
-        .build();
-
-    connection.on("ReceiveNotification", message => {
-        console.log("Notification received:", message);
-        showNotification(message);
-    });
-
-    connection.start().catch(err => console.error(err));
-
-    function sendNotification() {
-        fetch("/api/notifications/send?message=Hello", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => console.log("Notification sent:", data))
-        .catch(error => console.error("Error sending notification:", error));
-    }
-
-    function showNotification(message) {
-        if (Notification.permission === "granted") {
-            new Notification("New Notification", { body: message });
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    new Notification("New Notification", { body: message });
-                }
-            });
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="/js/notification.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
-    }
 
-    // Register the Service Worker for push notifications
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/service-worker.js")
-            .then(registration => {
-                console.log("Service Worker registered with scope:", registration.scope);
-            })
-            .catch(error => {
-                console.log("Service Worker registration failed:", error);
-            });
-    }
-</script>
+        h1 {
+            color: #333;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+            button:active {
+                background-color: #3e8e41;
+            }
+    </style>
+</head>
+<body>
+    <h1>Notifications System</h1>
+    <button onclick="subscribeToPush()">Subscribe to Push Notifications</button>
+    <button onclick="sendPushNotification('Test message')">Send Push Notification</button>
+</body>
+</html>

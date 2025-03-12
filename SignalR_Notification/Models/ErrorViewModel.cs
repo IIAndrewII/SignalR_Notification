@@ -1,4 +1,4 @@
-namespace SignalR_Notification.Models
+namespace SignalRWebPushApp.Models
 {
     public class ErrorViewModel
     {

@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-
-namespace SignalR_Notification.Controllers
+namespace SignalRWebPushApp.Hubs
 {
     public class NotificationHub : Hub
     {

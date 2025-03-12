@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SignalR_Notification.Models;
+using SignalRWebPushApp.Models;
 
-namespace SignalR_Notification.Controllers;
+namespace SignalRWebPushApp.Controllers;
 
 public class HomeController : Controller
 {
